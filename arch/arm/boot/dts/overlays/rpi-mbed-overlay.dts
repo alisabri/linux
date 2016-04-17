@@ -22,7 +22,7 @@
 	};
 
 	fragment@2 {
-		target = </>;
+		target = <&i2c1>;
 		__overlay__ {			
 			#address-cells = <1>;
 			#size-cells = <0>;

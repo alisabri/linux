@@ -174,10 +174,10 @@ static const struct snd_soc_dapm_route tlv320aic23_intercon[] = {
 	{"ROUT", NULL, "Output Mixer"},
 
 	/* Inputs */
-	{"Line Input", "NULL", "LLINEIN"},
-	{"Line Input", "NULL", "RLINEIN"},
+	{"Line Input", NULL, "LLINEIN"},
+	{"Line Input", NULL, "RLINEIN"},
 
-	{"Mic Input", "NULL", "MICIN"},
+	{"Mic Input", NULL, "MICIN"},
 
 	/* input mux */
 	{"Capture Source", "Line", "Line Input"},
@@ -557,11 +557,15 @@ static int tlv320aic23_codec_probe(struct snd_soc_codec *codec)
 	snd_soc_write(codec, TLV320AIC23_DIGT, TLV320AIC23_DEEMP_44K);
 
 	/* Unmute input */
-	snd_soc_update_bits(codec, TLV320AIC23_LINVOL,
-			    TLV320AIC23_LIM_MUTED, TLV320AIC23_LRS_ENABLED);
+//	snd_soc_update_bits(codec, TLV320AIC23_LINVOL,
+	//		    TLV320AIC23_LIM_MUTED, TLV320AIC23_LRS_ENABLED);
 
-	snd_soc_update_bits(codec, TLV320AIC23_RINVOL,
-			    TLV320AIC23_LIM_MUTED, TLV320AIC23_LRS_ENABLED);
+	snd_soc_write(codec, TLV320AIC23_LINVOL, 0x17);
+
+//	snd_soc_update_bits(codec, TLV320AIC23_RINVOL,
+//			    TLV320AIC23_LIM_MUTED, TLV320AIC23_LRS_ENABLED);
+
+	snd_soc_write(codec, TLV320AIC23_RINVOL, 0x17);
 
 	snd_soc_update_bits(codec, TLV320AIC23_ANLG,
 			    TLV320AIC23_BYPASS_ON | TLV320AIC23_MICM_MUTED,

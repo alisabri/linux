@@ -52,7 +52,7 @@ MODULE_DEVICE_TABLE(of, tlv320aic23_of_match);
 
 static struct i2c_driver tlv320aic23_i2c_driver = {
 	.driver = {
-		   .name = "tlv320aic23-codec",
+		   .name = "tlv320aic23",
 		   .of_match_table = of_match_ptr(tlv320aic23_of_match),
 		   },
 	.probe = tlv320aic23_i2c_probe,
