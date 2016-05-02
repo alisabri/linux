@@ -56,7 +56,8 @@ static struct snd_soc_dai_link snd_rpi_mbed_dai[] = {
 	.platform_name	= "bcm2708-i2s.0",
 	.codec_name	= "tlv320aic23.1-001b",
 	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-				SND_SOC_DAIFMT_CBS_CFS,
+				SND_SOC_DAIFMT_CBM_CFM,
+//				SND_SOC_DAIFMT_CBS_CFS,
 	.ops		= &snd_rpi_mbed_ops,
 	.init		= snd_rpi_mbed_init,
 },
@@ -65,6 +66,7 @@ static struct snd_soc_dai_link snd_rpi_mbed_dai[] = {
 /* audio machine driver */
 static struct snd_soc_card snd_rpi_mbed = {
 	.name	 = "snd_rpi_mbed",
+	.owner		= THIS_MODULE,
 	.dai_link     = snd_rpi_mbed_dai,
 	.num_links    = ARRAY_SIZE(snd_rpi_mbed_dai),
 };
@@ -74,11 +76,17 @@ static int snd_rpi_mbed_probe(struct platform_device *pdev)
 
 	int ret = 0;
 
+//	printk(KERN_DEBUG "Rpi mbed probe da %s", pdev->name);
+
 	snd_rpi_mbed.dev = &pdev->dev;
 
 	if (pdev->dev.of_node) {
+		
 	    struct device_node *i2s_node;
 	    struct snd_soc_dai_link *dai = &snd_rpi_mbed_dai[0];
+//		printk(KERN_DEBUG "Rpi mbed probe da %s", pdev->dev.of_node->name);
+//		printk(KERN_DEBUG "Rpi mbed probe da %s", pdev->dev.of_node->full_name);
+
 	    i2s_node = of_parse_phandle(pdev->dev.of_node,
 					"i2s-controller", 0);
 
@@ -88,11 +96,12 @@ static int snd_rpi_mbed_probe(struct platform_device *pdev)
 			dai->platform_name = NULL;
 			dai->platform_of_node = i2s_node;
 	    }
+	    
 	}
 
 	ret = snd_soc_register_card(&snd_rpi_mbed);
 	if (ret)
-		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n", ret);
+		dev_err(&pdev->dev, "Here it is snd_soc_register_card() failed: %d\n", ret);
 
 	return ret;
 }

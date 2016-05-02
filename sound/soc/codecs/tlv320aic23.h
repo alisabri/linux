@@ -26,7 +26,7 @@ int tlv320aic23_probe(struct device *dev, struct regmap *regmap);
 #define TLV320AIC23_ANLG		0x04
 #define TLV320AIC23_DIGT		0x05
 #define TLV320AIC23_PWR			0x06
-#define TLV320AIC23_DIGT_FMT		0x07
+#define TLV320AIC23_DIGT_FMT	0x07
 #define TLV320AIC23_SRATE		0x08
 #define TLV320AIC23_ACTIVE		0x09
 #define TLV320AIC23_RESET		0x0F
@@ -68,7 +68,7 @@ int tlv320aic23_probe(struct device *dev, struct regmap *regmap);
 #define TLV320AIC23_DAC_OFF		0x0008
 #define TLV320AIC23_ADC_OFF		0x0004
 #define TLV320AIC23_MIC_OFF		0x0002
-#define TLV320AIC23_LINE_OFF		0x0001
+#define TLV320AIC23_LINE_OFF	0x0001
 
 /* Digital audio interface register */
 #define TLV320AIC23_MS_MASTER		0x0040

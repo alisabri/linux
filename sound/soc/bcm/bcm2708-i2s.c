@@ -437,8 +437,10 @@ static int bcm2708_i2s_hw_params(struct snd_pcm_substream *substream,
 	}
 
 	/* If bclk_ratio already set, use that one. */
-	if (dev->bclk_ratio)
+	if (dev->bclk_ratio) {
 		bclk_ratio = dev->bclk_ratio;
+		printk(KERN_DEBUG "Bclk ratio set %d\n", bclk_ratio);
+	}
 
 	/*
 	 * Clock Settings
@@ -464,14 +466,18 @@ static int bcm2708_i2s_hw_params(struct snd_pcm_substream *substream,
 	target_frequency = sampling_rate * bclk_ratio;
 	clk_src = BCM2708_CLK_SRC_OSC;
 	mash = BCM2708_CLK_MASH_0;
+	printk(KERN_DEBUG "I2S Sampling rate %d %d\n", sampling_rate, bclk_ratio);
 
 	if (bcm2708_clk_freq[clk_src] % target_frequency == 0
 			&& bit_master && frame_master) {
 		divi = bcm2708_clk_freq[clk_src] / target_frequency;
 		divf = 0;
+		printk(KERN_DEBUG "Clock source  OSC\n");
+
 	} else {
 		uint64_t dividend;
 
+		printk(KERN_DEBUG "Clock source  PLLD\n");
 		if (!dev->bclk_ratio) {
 			/*
 			 * Overwrite bclk_ratio, because the
@@ -530,12 +536,16 @@ static int bcm2708_i2s_hw_params(struct snd_pcm_substream *substream,
 
 	ch1pos = data_delay;
 	ch2pos = bclk_ratio / 2 + data_delay;
+	printk(KERN_DEBUG "Ch1pos ch2pos %d %d\n", ch1pos, ch2pos);
+
+	format = BCM2708_I2S_CH1(format) | BCM2708_I2S_CH2(format);
+	format |= BCM2708_I2S_CH1(BCM2708_I2S_CHPOS(ch1pos));
+	format |= BCM2708_I2S_CH2(BCM2708_I2S_CHPOS(ch2pos));
 
 	switch (params_channels(params)) {
+	case 1:
+		format &= ~BCM2708_I2S_CHEN;
 	case 2:
-		format = BCM2708_I2S_CH1(format) | BCM2708_I2S_CH2(format);
-		format |= BCM2708_I2S_CH1(BCM2708_I2S_CHPOS(ch1pos));
-		format |= BCM2708_I2S_CH2(BCM2708_I2S_CHPOS(ch2pos));
 		break;
 	default:
 		return -EINVAL;
@@ -796,7 +806,7 @@ static struct snd_soc_dai_driver bcm2708_i2s_dai = {
 	.name	= "bcm2708-i2s",
 	.probe	= bcm2708_i2s_dai_probe,
 	.playback = {
-		.channels_min = 2,
+		.channels_min = 1,
 		.channels_max = 2,
 		.rates =	SNDRV_PCM_RATE_8000_192000,
 		.formats =	SNDRV_PCM_FMTBIT_S16_LE
@@ -804,7 +814,7 @@ static struct snd_soc_dai_driver bcm2708_i2s_dai = {
 				| SNDRV_PCM_FMTBIT_S32_LE
 		},
 	.capture = {
-		.channels_min = 2,
+		.channels_min = 1,
 		.channels_max = 2,
 		.rates =	SNDRV_PCM_RATE_8000_192000,
 		.formats =	SNDRV_PCM_FMTBIT_S16_LE

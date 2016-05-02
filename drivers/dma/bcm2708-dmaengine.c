@@ -723,6 +723,8 @@ static struct dma_async_tx_descriptor *bcm2835_dma_prep_dma_cyclic(
 		return NULL;
 	}
 
+
+	printk(KERN_DEBUG "DMA async %d %d %d", d->frames, period_len, buf_len);
 	/*
 	 * Iterate over all frames, create a control block
 	 * for each frame and link them together.
